@@ -9,6 +9,9 @@ let {User} = require('./models/user');
 let {ObjectID} = require('mongodb');
 
 let app = express();
+
+let port = process.env.PORT || 3000;  //for Heroku.
+
 app.use(bodyParser.json());  //turns the data into an object - json
 
 app.post('/todos', (req, res) => {
@@ -47,16 +50,18 @@ app.get('/todos/:id', (req, res) => {
 		if(!todo){
 			return res.status(404).send();
 		}
-		res.send({todo});  //get everything on the object using es6
+		res.send({todo});  //get everything on the object using es6 destructuring
 
 	}, (e) => res.status(404).send());  //could use .catch
 });
 
 
 
-app.listen(3000, () => {
-	console.log('Started on Port 3000')
+app.listen(port, () => {
+	console.log(`Started UP at port ${port}`);
 });
 
 
 module.exports = {app};
+
+
