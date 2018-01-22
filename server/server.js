@@ -6,6 +6,7 @@ let bodyParser = require('body-parser');
 let {mongoose} = require('./db/mongoose.js');  //ES6 destructing
 let {Todo} = require('./models/todo');
 let {User} = require('./models/user');
+let {ObjectID} = require('mongodb');
 
 let app = express();
 app.use(bodyParser.json());  //turns the data into an object - json
@@ -32,6 +33,25 @@ app.get('/todos', (req, res) => {
 		res.status(400).send(e);
 	});
 });
+
+// CHALLENGE - Make new route to get user data based on ID
+app.get('/todos/:id', (req, res) => {
+	// res.send(req.params); // used this to test req.params. use postman get localhost:3000/todos/1234
+	let id = req.params.id;
+	
+	if(!ObjectID.isValid(id)) {
+		return res.status(404).send();
+	}
+
+	Todo.findById(id).then((todo) =>{
+		if(!todo){
+			return res.status(404).send();
+		}
+		res.send({todo});  //get everything on the object using es6
+
+	}, (e) => res.status(404).send());  //could use .catch
+});
+
 
 
 app.listen(3000, () => {
